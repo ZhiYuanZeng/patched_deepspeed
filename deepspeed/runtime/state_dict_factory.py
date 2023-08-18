@@ -92,7 +92,7 @@ class SDLoaderBase(ABC):
 
         merge_count = 1
         if num_ckpt == mp_world_size:
-            assert os.path.exists(load_path)
+            # assert os.path.exists(load_path)
             #logger.info(f'rank: {mp_rank} loading checkpoint: {load_path}')
             sd = self.checkpoint_engine.load(load_path, map_location=lambda storage, \
                 loc: storage)

@@ -44,6 +44,8 @@ from .pipe import PipelineModule
 
 from .git_version_info import version, git_hash, git_branch
 
+from .utils import hack_torch_io_to_support_aws 
+hack_torch_io_to_support_aws()
 
 def _parse_version(version_str):
     '''Parse a version string and extract the major, minor, and patch versions.'''
