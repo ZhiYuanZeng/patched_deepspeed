@@ -2478,7 +2478,7 @@ class DeepSpeedEngine(Module):
                     map_location=torch.device('cpu'))
 
                 # Updating global -> local expert ids
-                moe_str_prefix = '.deepspeed_moe.experts.deepspeed_experts.'
+                moe_str_prefix = 'deepspeed_moe.experts.deepspeed_experts.'
                 for key in list(expert_state_dict.keys()):
                     local_key = key.replace(f'{moe_str_prefix}{global_expert_id}',
                                             f'{moe_str_prefix}{local_expert_id}')
@@ -2500,7 +2500,7 @@ class DeepSpeedEngine(Module):
                                                                    map_location=torch.device('cpu'))
                         # print(expert_state_dict.keys())
                         # Updating global -> local expert ids
-                        moe_str_prefix = '.deepspeed_moe.experts.deepspeed_experts.'
+                        moe_str_prefix = 'deepspeed_moe.experts.deepspeed_experts.'
                         for key in list(expert_state_dict.keys()):
                             local_key = key.replace(f'{moe_str_prefix}{global_expert_id}',
                                                     f'{moe_str_prefix}{local_expert_id}')
@@ -2596,6 +2596,7 @@ class DeepSpeedEngine(Module):
 
         ckpt_files = glob.glob(ckpt_file_pattern)
         ckpt_files.sort()
+        assert len(ckpt_files) > 0, ckpt_file_pattern
         return ckpt_files
 
     def load_checkpoint(self,
@@ -3011,8 +3012,12 @@ class DeepSpeedEngine(Module):
                 moe_state_dict = {}
                 for n, p in module.state_dict().items():
                     if 'expert' in n and 'moe.gate.wg.weight' not in n:
-                        moe_state_dict[n_module + '.' + n] = p
-                moe_str_prefix = '.deepspeed_moe.experts.deepspeed_experts.'
+                        if n_module == '':
+                            moe_state_dict[n] = p
+                        else:
+                            moe_state_dict[n_module + '.' + n] = p
+
+                moe_str_prefix = 'deepspeed_moe.experts.deepspeed_experts.'
                 # print(moe_state_dict.keys()) # until now, everything is fine. So the bug happens at next few lines
                 # Reorder the moe name rank, so that each checkpoint only has one expert
                 experts_state_dict = defaultdict(dict)

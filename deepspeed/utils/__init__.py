@@ -15,3 +15,4 @@ from .tensor_fragment import safe_get_full_fp32_param, safe_get_full_grad, safe_
 from .mixed_precision_linkage import link_hp_params
 from deepspeed.runtime.dataloader import RepeatingLoader
 from .numa import get_numactl_cmd
+from .patch_io import hack_torch_io_to_support_aws
